@@ -26,12 +26,21 @@ async function run() {
     const appoinmentOptionsCOllection = client
       .db("doc-portal")
       .collection("appoinmentOptions");
+    const bookingsCOllection = client.db("doc-portal").collection("bookings");
 
+    // appoinment options 
     app.get("/appoinmentOptions", async (req, res) => {
-        const query = {}
+      const query = {};
       const result = await appoinmentOptionsCOllection.find(query).toArray();
       res.send(result);
     });
+
+    app.post('/bookings', async(req, res)=>{
+      const booking = req.body 
+      console.log(booking);
+      const result = await bookingsCOllection.insertOne(booking);
+      res.send(result);
+    } )
 
     await client.db("admin").command({ ping: 1 });
   } finally {
@@ -44,5 +53,5 @@ app.get("/", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("Doctor portal is running");
+  console.log(`Doctor portal is running om ${port}`);
 });
