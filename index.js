@@ -30,6 +30,8 @@ async function run() {
 
     // appoinment options
     app.get("/appoinmentOptions", async (req, res) => {
+      const date = req.query.date;
+      console.log("date", date);
       const query = {};
       const result = await appoinmentOptionsCOllection.find(query).toArray();
       res.send(result);
@@ -37,8 +39,7 @@ async function run() {
 
     // booking post
     app.post("/bookings", async (req, res) => {
-      const date = req.query.date;
-      console.log("date", date);
+
       const booking = req.body;
       const result = await bookingsCOllection.insertOne(booking);
       res.send(result);
