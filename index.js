@@ -28,18 +28,20 @@ async function run() {
       .collection("appoinmentOptions");
     const bookingsCOllection = client.db("doc-portal").collection("bookings");
 
-    // appoinment options
+    // appoinment options 
+    // use aggregation to query multiple collections and then merge data  
     app.get("/appoinmentOptions", async (req, res) => {
       const date = req.query.date;
-      console.log("date", date);
       const query = {};
-      const result = await appoinmentOptionsCOllection.find(query).toArray();
-      res.send(result);
+      const options = await appoinmentOptionsCOllection.find(query).toArray(); 
+      const bookingQuery = {appoinmentDate : date} 
+      const alreadyBooked = await bookingsCOllection.find(bookingQuery).toArray() 
+
+      res.send(options);
     });
 
     // booking post
     app.post("/bookings", async (req, res) => {
-
       const booking = req.body;
       const result = await bookingsCOllection.insertOne(booking);
       res.send(result);
