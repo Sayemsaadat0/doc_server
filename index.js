@@ -39,11 +39,12 @@ async function run() {
       const bookingQuery = {appoinment_Date: date} 
     // finding selected booked 
       const alreadyBooked = await bookingsCOllection.find(bookingQuery).toArray() 
+    
       options.forEach(option =>{
         const optionBooked = alreadyBooked.filter(book =>book.Treatment == option.name)
         const bookedSlots = optionBooked.map(book => book.slot)
-        const remainingSlots = option.slots.filter(slot => bookedSlots.includes(slot))
-      console.log('optionBooked', optionBooked)
+        const remainingSlots = option.slots.filter(slot => !bookedSlots.includes(slot))
+        option.slots = remainingSlots;
       }) 
     
       res.send(options);
