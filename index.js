@@ -28,25 +28,31 @@ async function run() {
       .collection("appoinmentOptions");
     const bookingsCOllection = client.db("doc-portal").collection("bookings");
 
-    // appoinment options 
-    // use aggregation to query multiple collections and then merge data  
+    // appoinment options
+    // use aggregation to query multiple collections and then merge data
     app.get("/appoinmentOptions", async (req, res) => {
-      // get the date 
+      // get the date
       const date = req.query.date;
       const query = {};
-      const options = await appoinmentOptionsCOllection.find(query).toArray(); 
+      const options = await appoinmentOptionsCOllection.find(query).toArray();
       // set the date as a apoinment date
-      const bookingQuery = {appoinment_Date: date} 
-    // finding selected booked 
-      const alreadyBooked = await bookingsCOllection.find(bookingQuery).toArray() 
-    
-      options.forEach(option =>{
-        const optionBooked = alreadyBooked.filter(book =>book.Treatment == option.name)
-        const bookedSlots = optionBooked.map(book => book.slot)
-        const remainingSlots = option.slots.filter(slot => !bookedSlots.includes(slot))
+      const bookingQuery = { appoinment_Date: date };
+      // finding selected booked
+      const alreadyBooked = await bookingsCOllection
+        .find(bookingQuery)
+        .toArray();
+
+      options.forEach((option) => {
+        const optionBooked = alreadyBooked.filter(
+          (book) => book.Treatment == option.name
+        );
+        const bookedSlots = optionBooked.map((book) => book.slot);
+        const remainingSlots = option.slots.filter(
+          (slot) => !bookedSlots.includes(slot)
+        );
         option.slots = remainingSlots;
-      }) 
-    
+      });
+
       res.send(options);
     });
 
